@@ -53,7 +53,7 @@ session = get_session(aws_id, aws_secret, aws_token)
 sm_session = sagemaker.Session(boto_session=session)
 
 # Data & Model Configuration
-df_features = extract_feature_pair()
+df_features = extract_features_pair()
 
 MODEL_INFO = {
         "endpoint": aws_endpoint,
@@ -160,6 +160,7 @@ if submitted:
         display_explanation(input_df,session, aws_bucket)
     else:
         st.error(res)
+
 
 
 
