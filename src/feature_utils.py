@@ -57,10 +57,10 @@ def extract_features_pair():
     
     stk_data = yf.download(stk_tickers, start=START_DATE, end=END_DATE, auto_adjust=False)
 
-    Y = stk_data.loc[:, ('Adj Close', 'AME')]
+    Y = stk_data.loc[:, ('Adj Close', 'AVGO')]
     Y.name = 'AVGO'
 
-    X = stk_data.loc[:, ('Adj Close', 'AAPL')]
+    X = stk_data.loc[:, ('Adj Close', 'NVDA')]
     X.name = 'NVDA'
 
     dataset = pd.concat([Y, X], axis=1).dropna()
