@@ -104,9 +104,9 @@ def convert_input_pca_regression(request_body, request_content_type):
         X = FeatureEngineer(windows=[10,15]).transform(dataset[[target]])
     
         techIndicator_1 = 'EMA_10'
-        RSI_15 = json.loads(request_body)[techIndicator_1]
+        EMA_10 = json.loads(request_body)[techIndicator_1]
         techIndicator_2 = 'EMA_15'
-        MOM_15 = json.loads(request_body)[techIndicator_2]
+        EMA_15 = json.loads(request_body)[techIndicator_2]
 
         # Calculate the distance
         distances = np.sqrt(
