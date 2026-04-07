@@ -18,7 +18,7 @@ def extract_features():
     
     START_DATE = (datetime.date.today() - datetime.timedelta(days=365)).strftime("%Y-%m-%d")
     END_DATE = datetime.date.today().strftime("%Y-%m-%d")
-    stk_tickers = ['MSFT', 'IBM', 'GOOGL']
+    stk_tickers = ['NVDA', 'IBM', 'GOOGL']
     ccy_tickers = ['DEXJPUS', 'DEXUSUK']
     idx_tickers = ['SP500', 'DJIA', 'VIXCLS']
     
@@ -27,7 +27,7 @@ def extract_features():
     ccy_data = web.DataReader(ccy_tickers, 'fred', start=START_DATE, end=END_DATE)
     idx_data = web.DataReader(idx_tickers, 'fred', start=START_DATE, end=END_DATE)
 
-    Y = np.log(stk_data.loc[:, ('Adj Close', 'MSFT')]).diff(return_period).shift(-return_period)
+    Y = np.log(stk_data.loc[:, ('Adj Close', 'NVDA')]).diff(return_period).shift(-return_period)
     Y.name = Y.name[-1]+'_Future'
     
     X1 = np.log(stk_data.loc[:, ('Adj Close', ('GOOGL', 'IBM'))]).diff(return_period)
@@ -51,11 +51,11 @@ def extract_features_pair():
 
     START_DATE = (datetime.date.today() - datetime.timedelta(days=365)).strftime("%Y-%m-%d")
     END_DATE = datetime.date.today().strftime("%Y-%m-%d")
-    stk_tickers = ['AAPL', 'MPWR']
+    stk_tickers = ['NVDA', 'MPWR']
     
     stk_data = yf.download(stk_tickers, start=START_DATE, end=END_DATE, auto_adjust=False)
 
-    Y = stk_data.loc[:, ('Adj Close', 'AAPL')]
+    Y = stk_data.loc[:, ('Adj Close', 'NVDA')]
     Y.name = 'AAPL'
 
     X = stk_data.loc[:, ('Adj Close', 'MPWR')]
@@ -103,22 +103,22 @@ def convert_input_pca_regression(request_body, request_content_type):
 
         X = FeatureEngineer(windows=[10,15]).transform(dataset[[target]])
     
-        techIndicator_1 = 'RSI_15'
+        techIndicator_1 = 'EMA_10'
         RSI_15 = json.loads(request_body)[techIndicator_1]
-        techIndicator_2 = 'MOM_15'
+        techIndicator_2 = 'EMA_15'
         MOM_15 = json.loads(request_body)[techIndicator_2]
 
         # Calculate the distance
         distances = np.sqrt(
-            (X[techIndicator_1] - RSI_15)**2 + 
-            (X[techIndicator_2] - MOM_15)**2
+            (X[techIndicator_1] - EMA_10)**2 + 
+            (X[techIndicator_2] - EMA_15)**2
         )
         
         closest_index = distances.idxmin()
         closest_row = X.loc[[closest_index]]
     
-        closest_row[techIndicator_1] = RSI_15
-        closest_row[techIndicator_2] = MOM_15
+        closest_row[techIndicator_1] = EMA_10
+        closest_row[techIndicator_2] = EMA_15
     
         return closest_row
     else:
